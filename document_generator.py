@@ -250,7 +250,7 @@ class OracleDocumentGenerator:
         if primary_keys:
             column_defs.append(f"  CONSTRAINT PK_{table_info['tablename']} PRIMARY KEY ({', '.join(primary_keys)})")
         
-        sql_parts.extend([def + "," for def in column_defs[:-1]])
+        sql_parts.extend([col_def + "," for col_def in column_defs[:-1]])
         sql_parts.append(column_defs[-1])
         sql_parts.append(");")
         sql_parts.append("")
