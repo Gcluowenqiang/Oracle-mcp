@@ -8,11 +8,18 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# 安装系统依赖
+# 安装系统依赖（包括构建工具）
 RUN apt-get update && apt-get install -y \
+    # 构建工具（用于编译cx_Oracle）
+    gcc \
+    g++ \
+    build-essential \
+    python3-dev \
+    # Oracle Instant Client依赖
     wget \
     unzip \
     libaio1 \
+    # 清理缓存
     && rm -rf /var/lib/apt/lists/*
 
 # 下载并安装Oracle Instant Client
@@ -31,8 +38,11 @@ ENV PATH=/opt/oracle/instantclient_21_13:$PATH
 # 复制依赖文件
 COPY requirements.txt .
 
-# 安装Python依赖
+# 安装Python依赖（包括编译cx_Oracle）
 RUN pip install --no-cache-dir -r requirements.txt
+
+# 安装完成后可以清理构建工具（可选，但会增加镜像层）
+# RUN apt-get remove -y gcc g++ build-essential python3-dev && apt-get autoremove -y
 
 # 复制项目文件
 COPY . .
