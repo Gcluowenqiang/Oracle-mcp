@@ -1,0 +1,108 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => {
+      // Map config fields to environment variables
+      const env = {
+        ORACLE_HOST: config.host,
+        ORACLE_PORT: String(config.port),
+        ORACLE_USERNAME: config.username,
+        ORACLE_PASSWORD: config.password
+      };
+      if (config.serviceName) env.ORACLE_SERVICE_NAME = config.serviceName;
+      if (config.sid) env.ORACLE_SID = config.sid;
+      if (config.connectTimeout !== undefined) env.ORACLE_CONNECT_TIMEOUT = String(config.connectTimeout);
+      if (config.queryTimeout !== undefined) env.ORACLE_QUERY_TIMEOUT = String(config.queryTimeout);
+      if (config.maxRetries !== undefined) env.ORACLE_MAX_RETRIES = String(config.maxRetries);
+      if (config.securityMode !== undefined) env.ORACLE_SECURITY_MODE = config.securityMode;
+      if (config.allowedSchemas !== undefined) env.ORACLE_ALLOWED_SCHEMAS = config.allowedSchemas.join(",");
+      if (config.enableQueryLog !== undefined) env.ORACLE_ENABLE_QUERY_LOG = String(config.enableQueryLog);
+      if (config.maxResultRows !== undefined) env.ORACLE_MAX_RESULT_ROWS = String(config.maxResultRows);
+      if (config.encoding !== undefined) env.ORACLE_ENCODING = config.encoding;
+      return {
+        command: "python",
+        args: ["main.py"],
+        env
+      };
+    }
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - host
+      - port
+      - username
+      - password
+    properties:
+      host:
+        type: string
+        description: Oracle database host address
+      port:
+        type: number
+        description: Oracle database port
+      username:
+        type: string
+        description: Database username
+      password:
+        type: string
+        description: Database password
+      serviceName:
+        type: string
+        description: Oracle service name (either serviceName or sid must be provided)
+      sid:
+        type: string
+        description: Oracle SID (either serviceName or sid must be provided)
+      connectTimeout:
+        type: number
+        default: 30
+        description: Connection timeout in seconds
+      queryTimeout:
+        type: number
+        default: 60
+        description: Query timeout in seconds
+      maxRetries:
+        type: number
+        default: 3
+        description: Maximum number of retries
+      securityMode:
+        type: string
+        default: readonly
+        description: "Security mode: readonly, limited_write, full_access"
+      allowedSchemas:
+        type: array
+        items:
+          type: string
+        default:
+          - "*"
+        description: Allowed schemas, comma separated
+      enableQueryLog:
+        type: boolean
+        default: false
+        description: Enable query logging
+      maxResultRows:
+        type: number
+        default: 1000
+        description: Maximum result rows
+      encoding:
+        type: string
+        default: UTF-8
+        description: Character encoding
+  exampleConfig:
+    host: localhost
+    port: 1521
+    username: hr
+    password: password
+    serviceName: XEPDB1
+    connectTimeout: 30
+    queryTimeout: 60
+    maxRetries: 3
+    securityMode: readonly
+    allowedSchemas:
+      - "*"
+    enableQueryLog: false
+    maxResultRows: 1000
+    encoding: UTF-8
