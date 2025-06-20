@@ -1,4 +1,5 @@
 # Oracle数据库MCP服务
+[![smithery badge](https://smithery.ai/badge/@Gcluowenqiang/oracle-mcp-qyue)](https://smithery.ai/server/@Gcluowenqiang/oracle-mcp-qyue)
 
 专为Cursor IDE集成设计的Oracle数据库MCP（Model Context Protocol）服务，提供安全的Oracle数据库访问和管理功能。
 
@@ -13,6 +14,14 @@
 - **🏛️ Oracle特性支持**：Schema管理、SID/SERVICE_NAME连接、LOB处理
 
 ## 🔧 安装配置
+
+### Installing via Smithery
+
+To install Oracle Database Access Service for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@Gcluowenqiang/oracle-mcp-qyue):
+
+```bash
+npx -y @smithery/cli install @Gcluowenqiang/oracle-mcp-qyue --client claude
+```
 
 ### 环境要求
 
