@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "oracle-db": {
+      "command": "python",
+      "args": ["D:\\your\\path\\to\\oracle-mcp\\main.py"],
+      "env": {
+        "_comment_required": "=== 必需配置 ===",
+        "ORACLE_HOST": "localhost",
+        "ORACLE_PORT": "1521",
+        "ORACLE_USERNAME": "your_username",
+        "ORACLE_PASSWORD": "your_password",
+        
+        "_comment_connection": "=== 连接标识符（二选一） ===",
+        "ORACLE_SERVICE_NAME": "XEPDB1",
+        "_comment_service_name": "推荐使用SERVICE_NAME（现代Oracle推荐）",
+        "_comment_sid": "或者使用SID（传统方式）",
+        "ORACLE_SID": "",
+        
+        "_comment_security": "=== 安全配置 ===",
+        "ORACLE_SECURITY_MODE": "readonly",
+        "_comment_security_modes": "安全模式: readonly(只读) | limited_write(限制写入) | full_access(完全访问)",
+        
+        "_comment_schemas": "=== Schema访问控制 ===",
+        "ORACLE_ALLOWED_SCHEMAS": "*",
+        "_comment_schemas_options": "Schema列表: '*'(所有) | 'auto'(自动发现) | 'HR,SCOTT,OE'(指定列表)",
+        
+        "_comment_optional": "=== 可选配置 ===",
+        "ORACLE_CONNECT_TIMEOUT": "30",
+        "ORACLE_QUERY_TIMEOUT": "60",
+        "ORACLE_MAX_RETRIES": "3",
+        "ORACLE_MAX_RESULT_ROWS": "1000",
+        "ORACLE_ENABLE_QUERY_LOG": "false",
+        "ORACLE_ENCODING": "UTF-8"
+      }
+    }
+  }
+} 
