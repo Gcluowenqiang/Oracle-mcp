@@ -6,7 +6,7 @@ Copyright (c) 2025 qyue
 Licensed under the MIT License.
 See LICENSE file in the project root for full license information.
 """
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List, Optional
 from enum import Enum
 import os
@@ -44,7 +44,8 @@ class OracleConfig(BaseModel):
     max_result_rows: int = Field(1000, description="最大返回行数")
     encoding: str = Field("UTF-8", description="字符编码")
     
-    @validator('security_mode', pre=True)
+    @field_validator('security_mode', mode='before')
+    @classmethod
     def validate_security_mode(cls, v):
         """验证安全模式"""
         if isinstance(v, str):
@@ -54,28 +55,25 @@ class OracleConfig(BaseModel):
                 raise ValueError(f"无效的安全模式: {v}，支持的模式: {[mode.value for mode in SecurityMode]}")
         return v
     
-    @validator('allowed_schemas')
+    @field_validator('allowed_schemas')
+    @classmethod
     def validate_schemas(cls, v):
         """验证Schema列表"""
         if not v:
             raise ValueError("至少需要指定一个允许访问的Schema")
         return v
     
-    @validator('service_name', 'sid')
-    def validate_connection_identifier(cls, v, values, field):
-        """验证服务名或SID至少指定一个"""
-        # 在所有字段验证完后再检查
-        return v
-    
-    @validator('sid')
-    def validate_service_or_sid(cls, v, values):
-        """确保service_name或sid至少指定一个"""
-        service_name = values.get('service_name')
-        if not service_name and not v:
+    @model_validator(mode='after')
+    def validate_connection_identifier(self):
+        """确保service_name或sid至少指定一个，且不能同时指定"""
+        service_name = self.service_name
+        sid = self.sid
+        
+        if not service_name and not sid:
             raise ValueError("必须指定service_name或sid其中之一")
-        if service_name and v:
+        if service_name and sid:
             raise ValueError("service_name和sid不能同时指定")
-        return v
+        return self
     
     def get_dsn(self) -> str:
         """获取Oracle DSN连接字符串"""
